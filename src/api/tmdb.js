@@ -6,26 +6,11 @@ export const IMAGE_BASE_URL = import.meta.env.VITE_TMDB_IMAGE_URL;
 
 const tmdbApi = axios.create({
   baseURL: BASE_URL,
-  headers: {
-    Authorization: `Bearer ${API_KEY}`,
-  },
   params: {
+    api_key: API_KEY,
     language: 'ko-KR',
   },
 });
-
-// --- Interceptors: response & error handling ---
-tmdbApi.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response) {
-      console.error("TMDB API Error:", error.response.status, error.response.data);
-    } else {
-      console.error("TMDB API Network/Unknown Error:", error.message);
-    }
-    return Promise.reject(error);
-  }
-);
 
 // 인기 영화
 export const getPopularMovies = (page = 1) => {
