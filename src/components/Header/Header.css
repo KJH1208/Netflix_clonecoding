@@ -175,7 +175,33 @@
   }
 
   .user-email {
-    display: none;
+   .user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.login-badge {
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #4285F4, #34A853);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
+}
+
+.user-email {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
   }
 }
 

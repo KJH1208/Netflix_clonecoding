@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../../store/authSlice';
+import { logoutFirebase } from '../../firebase';
+import { showToast } from '../../store/toastSlice';
 import './Header.css';
 
 const Header = () => {
@@ -12,7 +13,7 @@ const Header = () => {
   const dispatch = useDispatch();
   
   // Redux에서 상태 가져오기
-  const currentUser = useSelector((state) => state.auth.currentUser);
+  const { userEmail, loginMethod } = useSelector((state) => state.auth);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,9 +29,12 @@ const Header = () => {
     setIsMobileMenuOpen(false);
   }, [location]);
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate('/signin');
+  const handleLogout = async () => {
+    const result = await logoutFirebase();
+    if (result.success) {
+      dispatch(showToast({ message: '로그아웃 되었습니다.', type: 'info' }));
+      navigate('/signin');
+    }
   };
 
   const isActive = (path) => location.pathname === path;
@@ -60,7 +64,10 @@ const Header = () => {
         </div>
 
         <div className="header-right">
-          <span className="user-email">{currentUser}</span>
+          <div className="user-info">
+            {loginMethod === 'google' && <span className="login-badge">G</span>}
+            <span className="user-email">{userEmail}</span>
+          </div>
           <button className="logout-btn" onClick={handleLogout}>
             로그아웃
           </button>
