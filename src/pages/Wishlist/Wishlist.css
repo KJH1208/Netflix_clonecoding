@@ -1,0 +1,101 @@
+.wishlist-page {
+  padding-top: calc(var(--header-height) + 2rem);
+  padding-bottom: 3rem;
+  min-height: 100vh;
+}
+
+.wishlist-page .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.wishlist-page .page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.wishlist-count {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  background-color: var(--bg-secondary);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+}
+
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.5rem;
+}
+
+/* 빈 상태 */
+.empty-wishlist {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 6rem 2rem;
+  background-color: var(--bg-secondary);
+  border-radius: 16px;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.empty-wishlist h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+}
+
+.empty-wishlist p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .wishlist-page .page-title {
+    font-size: 1.5rem;
+  }
+
+  .movies-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+
+  .empty-wishlist {
+    padding: 4rem 1.5rem;
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+  }
+
+  .empty-wishlist h2 {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .movies-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

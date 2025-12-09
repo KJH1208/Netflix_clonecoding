@@ -1,0 +1,190 @@
+.popular-page {
+  padding-top: calc(var(--header-height) + 2rem);
+  padding-bottom: 3rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 0.5rem;
+  background-color: var(--bg-secondary);
+  padding: 0.25rem;
+  border-radius: 8px;
+}
+
+.toggle-btn {
+  padding: 0.5rem 1rem;
+  background-color: transparent;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.toggle-btn:hover {
+  color: var(--text-primary);
+}
+
+.toggle-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* 영화 그리드 */
+.movies-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.movies-grid.table {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.movies-grid.infinite {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+/* 페이지네이션 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 3rem;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  padding: 0.75rem 1.25rem;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+  background-color: var(--primary-color);
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-numbers {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.page-num {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.page-num:hover {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.page-num.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* 무한 스크롤 */
+.load-more-trigger {
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scroll-top-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 50px;
+  height: 50px;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.scroll-top-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(229, 9, 20, 0.5);
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .movies-grid.table,
+  .movies-grid.infinite {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+
+  .pagination {
+    gap: 0.5rem;
+  }
+
+  .page-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .page-num {
+    width: 35px;
+    height: 35px;
+    font-size: 0.85rem;
+  }
+
+  .scroll-top-btn {
+    width: 45px;
+    height: 45px;
+    bottom: 1.5rem;
+    right: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .movies-grid.table,
+  .movies-grid.infinite {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
