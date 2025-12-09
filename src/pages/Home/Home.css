@@ -1,0 +1,192 @@
+.home-page {
+  min-height: 100vh;
+}
+
+/* 히어로 배너 */
+.hero-banner {
+  position: relative;
+  height: 80vh;
+  min-height: 500px;
+  max-height: 800px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center top;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to right,
+    rgba(20, 20, 20, 0.9) 0%,
+    rgba(20, 20, 20, 0.6) 40%,
+    rgba(20, 20, 20, 0.3) 60%,
+    rgba(20, 20, 20, 0) 100%
+  ),
+  linear-gradient(
+    to top,
+    rgba(20, 20, 20, 1) 0%,
+    rgba(20, 20, 20, 0) 30%
+  );
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 0 4%;
+  max-width: 600px;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.hero-overview {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.hero-btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.95rem;
+}
+
+.hero-rating {
+  color: var(--warning-color);
+}
+
+.hero-year {
+  color: var(--text-secondary);
+}
+
+/* 영화 섹션 */
+.movie-sections {
+  padding: 0 4%;
+  padding-bottom: 3rem;
+}
+
+.movie-section {
+  margin-bottom: 2.5rem;
+}
+
+.movie-row {
+  overflow-x: auto;
+  overflow-y: visible;
+  padding-bottom: 1rem;
+  margin: -0.5rem;
+}
+
+.movie-row::-webkit-scrollbar {
+  height: 6px;
+}
+
+.movie-row::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 3px;
+}
+
+.movie-row-inner {
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem;
+}
+
+.movie-row-inner .movie-card {
+  flex: 0 0 180px;
+}
+
+/* 반응형 */
+@media (max-width: 1200px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .movie-row-inner .movie-card {
+    flex: 0 0 160px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-banner {
+    height: 60vh;
+    min-height: 400px;
+  }
+
+  .hero-title {
+    font-size: 1.75rem;
+  }
+
+  .hero-overview {
+    font-size: 0.95rem;
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+  }
+
+  .hero-btn {
+    justify-content: center;
+  }
+
+  .movie-row-inner .movie-card {
+    flex: 0 0 140px;
+  }
+
+  .section-title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-banner {
+    height: 50vh;
+    min-height: 350px;
+  }
+
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .movie-row-inner .movie-card {
+    flex: 0 0 120px;
+  }
+}

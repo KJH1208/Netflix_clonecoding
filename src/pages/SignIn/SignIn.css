@@ -1,0 +1,201 @@
+.signin-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.signin-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('https://assets.nflxext.com/ffe/siteui/vlv3/93da5c27-be66-427c-8b72-5cb39d275279/94eb5ad7-10d8-4571-8ed0-7d4227030dd1/KR-ko-20231204-popsignuptwoweeks-perspective_alpha_website_large.jpg');
+  background-size: cover;
+  background-position: center;
+  z-index: -2;
+}
+
+.signin-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: -1;
+}
+
+.signin-header {
+  padding: 1.5rem 4%;
+}
+
+.signin-logo {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  letter-spacing: 2px;
+}
+
+.signin-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.form-wrapper {
+  width: 100%;
+  max-width: 450px;
+  background-color: rgba(0, 0, 0, 0.75);
+  border-radius: 8px;
+  padding: 3rem 4rem;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.form-wrapper.animating {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.signin-form h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.75rem;
+  color: var(--text-primary);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="text"] {
+  width: 100%;
+  padding: 1rem;
+  background-color: #333;
+  border: none;
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus {
+  background-color: #454545;
+  box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.form-group input.error {
+  box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.form-group input::placeholder {
+  color: #8c8c8c;
+}
+
+.error-text {
+  display: block;
+  color: #e87c03;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.submit-btn:hover {
+  background-color: var(--primary-hover);
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary-color);
+  cursor: pointer;
+}
+
+.checkbox-label.error span {
+  color: #e87c03;
+}
+
+.switch-text {
+  margin-top: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.switch-btn {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.switch-btn:hover {
+  text-decoration: underline;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .signin-logo {
+    font-size: 2rem;
+  }
+
+  .form-wrapper {
+    padding: 2rem 1.5rem;
+    margin: 0 1rem;
+  }
+
+  .signin-form h2 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .signin-header {
+    text-align: center;
+  }
+
+  .signin-logo {
+    font-size: 1.75rem;
+  }
+
+  .form-wrapper {
+    background-color: transparent;
+    padding: 1rem;
+  }
+}
