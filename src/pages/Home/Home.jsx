@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { getPopularMovies, getNowPlayingMovies, getTopRatedMovies, getUpcomingMovies, IMAGE_BASE_URL } from '../../api/tmdb';
+import { toggleWishlist } from '../../store/wishlistSlice';
+import { showToast } from '../../store/toastSlice';
 import MovieCard from '../../components/MovieCard/MovieCard';
 import Loading from '../../components/Loading/Loading';
-import Toast from '../../components/Toast/Toast';
-import useWishlist from '../../hooks/useWishlist';
 import './Home.css';
 
 const Home = () => {
@@ -13,9 +14,9 @@ const Home = () => {
   const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [featuredMovie, setFeaturedMovie] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [toast, setToast] = useState(null);
   
-  const { wishlist, toggleWishlist, isInWishlist } = useWishlist();
+  const dispatch = useDispatch();
+  const wishlist = useSelector((state) => state.wishlist.items);
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -38,21 +39,28 @@ const Home = () => {
         setFeaturedMovie(popular.data.results[randomIndex]);
       } catch (error) {
         console.error('영화 데이터를 불러오는데 실패했습니다:', error);
-        setToast({ message: '영화 데이터를 불러오는데 실패했습니다.', type: 'error' });
+        dispatch(showToast({ message: '영화 데이터를 불러오는데 실패했습니다.', type: 'error' }));
       } finally {
         setLoading(false);
       }
     };
 
     fetchMovies();
-  }, []);
+  }, [dispatch]);
+
+  const isInWishlist = (movieId) => {
+    return wishlist.some(item => item.id === movieId);
+  };
 
   const handleToggleWishlist = (movie) => {
-    const added = toggleWishlist(movie);
-    setToast({
-      message: added ? `"${movie.title}"을(를) 찜 목록에 추가했습니다.` : `"${movie.title}"을(를) 찜 목록에서 제거했습니다.`,
-      type: added ? 'success' : 'info'
-    });
+    const isCurrentlyInWishlist = isInWishlist(movie.id);
+    dispatch(toggleWishlist(movie));
+    dispatch(showToast({
+      message: isCurrentlyInWishlist 
+        ? `"${movie.title}"을(를) 찜 목록에서 제거했습니다.`
+        : `"${movie.title}"을(를) 찜 목록에 추가했습니다.`,
+      type: isCurrentlyInWishlist ? 'info' : 'success'
+    }));
   };
 
   if (loading) {
@@ -128,14 +136,6 @@ const Home = () => {
           isInWishlist={isInWishlist}
         />
       </div>
-
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
     </div>
   );
 };

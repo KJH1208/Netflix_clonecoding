@@ -1,19 +1,23 @@
-import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { toggleWishlist } from '../../store/wishlistSlice';
+import { showToast } from '../../store/toastSlice';
 import MovieCard from '../../components/MovieCard/MovieCard';
-import Toast from '../../components/Toast/Toast';
-import useWishlist from '../../hooks/useWishlist';
 import './Wishlist.css';
 
 const Wishlist = () => {
-  const { wishlist, toggleWishlist, isInWishlist } = useWishlist();
-  const [toast, setToast] = useState(null);
+  const dispatch = useDispatch();
+  const wishlist = useSelector((state) => state.wishlist.items);
+
+  const isInWishlist = (movieId) => {
+    return wishlist.some(item => item.id === movieId);
+  };
 
   const handleToggleWishlist = (movie) => {
-    const added = toggleWishlist(movie);
-    setToast({
-      message: added ? `"${movie.title}"을(를) 찜 목록에 추가했습니다.` : `"${movie.title}"을(를) 찜 목록에서 제거했습니다.`,
-      type: added ? 'success' : 'info'
-    });
+    dispatch(toggleWishlist(movie));
+    dispatch(showToast({
+      message: `"${movie.title}"을(를) 찜 목록에서 제거했습니다.`,
+      type: 'info'
+    }));
   };
 
   return (
@@ -43,14 +47,6 @@ const Wishlist = () => {
           </div>
         )}
       </div>
-
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
     </div>
   );
 };

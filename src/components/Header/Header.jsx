@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { logout, getCurrentUser } from '../../utils/auth';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../../store/authSlice';
 import './Header.css';
 
 const Header = () => {
@@ -8,7 +9,10 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const currentUser = getCurrentUser();
+  const dispatch = useDispatch();
+  
+  // Redux에서 상태 가져오기
+  const currentUser = useSelector((state) => state.auth.currentUser);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,7 +29,7 @@ const Header = () => {
   }, [location]);
 
   const handleLogout = () => {
-    logout();
+    dispatch(logout());
     navigate('/signin');
   };
 

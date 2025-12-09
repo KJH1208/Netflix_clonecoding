@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { searchMovies, getGenres, getMoviesByGenre, getPopularMovies } from '../../api/tmdb';
+import { toggleWishlist } from '../../store/wishlistSlice';
+import { showToast } from '../../store/toastSlice';
 import MovieCard from '../../components/MovieCard/MovieCard';
 import Loading from '../../components/Loading/Loading';
-import Toast from '../../components/Toast/Toast';
-import useWishlist from '../../hooks/useWishlist';
 import './Search.css';
 
 const Search = () => {
@@ -14,9 +15,13 @@ const Search = () => {
   const [selectedGenre, setSelectedGenre] = useState('');
   const [sortBy, setSortBy] = useState('popularity');
   const [minRating, setMinRating] = useState(0);
-  const [toast, setToast] = useState(null);
   
-  const { toggleWishlist, isInWishlist } = useWishlist();
+  const dispatch = useDispatch();
+  const wishlist = useSelector((state) => state.wishlist.items);
+
+  const isInWishlist = (movieId) => {
+    return wishlist.some(item => item.id === movieId);
+  };
 
   // 장르 목록 불러오기
   useEffect(() => {
@@ -54,15 +59,12 @@ const Search = () => {
       let results = [];
 
       if (searchQuery.trim()) {
-        // 검색어가 있으면 검색 API 사용
         const response = await searchMovies(searchQuery);
         results = response.data.results;
       } else if (selectedGenre) {
-        // 장르 필터가 있으면 장르별 영화
         const response = await getMoviesByGenre(selectedGenre);
         results = response.data.results;
       } else {
-        // 둘 다 없으면 인기 영화
         const response = await getPopularMovies();
         results = response.data.results;
       }
@@ -78,7 +80,7 @@ const Search = () => {
       setMovies(results);
     } catch (error) {
       console.error('검색에 실패했습니다:', error);
-      setToast({ message: '검색에 실패했습니다.', type: 'error' });
+      dispatch(showToast({ message: '검색에 실패했습니다.', type: 'error' }));
     } finally {
       setLoading(false);
     }
@@ -125,11 +127,14 @@ const Search = () => {
   };
 
   const handleToggleWishlist = (movie) => {
-    const added = toggleWishlist(movie);
-    setToast({
-      message: added ? `"${movie.title}"을(를) 찜 목록에 추가했습니다.` : `"${movie.title}"을(를) 찜 목록에서 제거했습니다.`,
-      type: added ? 'success' : 'info'
-    });
+    const isCurrentlyInWishlist = isInWishlist(movie.id);
+    dispatch(toggleWishlist(movie));
+    dispatch(showToast({
+      message: isCurrentlyInWishlist 
+        ? `"${movie.title}"을(를) 찜 목록에서 제거했습니다.`
+        : `"${movie.title}"을(를) 찜 목록에 추가했습니다.`,
+      type: isCurrentlyInWishlist ? 'info' : 'success'
+    }));
   };
 
   return (
@@ -224,14 +229,6 @@ const Search = () => {
           </div>
         )}
       </div>
-
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
     </div>
   );
 };

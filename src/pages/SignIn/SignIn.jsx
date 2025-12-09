@@ -1,11 +1,48 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { tryLogin, tryRegister, validateEmail, isAuthenticated } from '../../utils/auth';
-import Toast from '../../components/Toast/Toast';
+import { useSelector, useDispatch } from 'react-redux';
+import { login } from '../../store/authSlice';
+import { showToast } from '../../store/toastSlice';
 import './SignIn.css';
+
+// 회원가입 함수
+const tryRegister = (email, password) => {
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  const userExists = users.some(user => user.id === email);
+  
+  if (userExists) {
+    return { success: false, message: '이미 존재하는 이메일입니다.' };
+  }
+  
+  users.push({ id: email, password: password });
+  localStorage.setItem('users', JSON.stringify(users));
+  return { success: true, message: '회원가입 성공!' };
+};
+
+// 로그인 검증 함수
+const validateLogin = (email, password) => {
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  const user = users.find(user => user.id === email && user.password === password);
+  
+  if (user) {
+    localStorage.setItem('TMDb-Key', user.password);
+    return { success: true, message: '로그인 성공!' };
+  }
+  return { success: false, message: '이메일 또는 비밀번호가 올바르지 않습니다.' };
+};
+
+// 이메일 검증 함수
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
+  const { isLoggedIn, savedEmail, rememberMe: savedRememberMe } = useSelector((state) => state.auth);
+  
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [isAnimating, setIsAnimating] = useState(false);
   
@@ -20,30 +57,23 @@ const SignIn = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreeTerms, setAgreeTerms] = useState(false);
   
-  // 에러 & 토스트
+  // 에러
   const [errors, setErrors] = useState({});
-  const [toast, setToast] = useState(null);
 
   // 이미 로그인된 경우 홈으로 이동
   useEffect(() => {
-    if (isAuthenticated()) {
+    if (isLoggedIn) {
       navigate('/');
     }
-  }, [navigate]);
+  }, [isLoggedIn, navigate]);
 
   // 저장된 이메일 불러오기
   useEffect(() => {
-    const savedEmail = localStorage.getItem('savedEmail');
-    const rememberMeStatus = localStorage.getItem('rememberMe');
-    if (savedEmail && rememberMeStatus === 'true') {
+    if (savedEmail && savedRememberMe) {
       setLoginEmail(savedEmail);
       setRememberMe(true);
     }
-  }, []);
-
-  const showToast = (message, type) => {
-    setToast({ message, type });
-  };
+  }, [savedEmail, savedRememberMe]);
 
   const switchMode = () => {
     setIsAnimating(true);
@@ -105,15 +135,16 @@ const SignIn = () => {
     
     if (!validateLoginForm()) return;
     
-    const result = tryLogin(loginEmail, loginPassword, rememberMe);
+    const result = validateLogin(loginEmail, loginPassword);
     
     if (result.success) {
-      showToast(result.message, 'success');
+      dispatch(login({ email: loginEmail, rememberMe }));
+      dispatch(showToast({ message: result.message, type: 'success' }));
       setTimeout(() => {
         navigate('/');
       }, 1000);
     } else {
-      showToast(result.message, 'error');
+      dispatch(showToast({ message: result.message, type: 'error' }));
     }
   };
 
@@ -125,7 +156,7 @@ const SignIn = () => {
     const result = tryRegister(registerEmail, registerPassword);
     
     if (result.success) {
-      showToast(result.message, 'success');
+      dispatch(showToast({ message: result.message, type: 'success' }));
       setTimeout(() => {
         setIsLoginMode(true);
         setLoginEmail(registerEmail);
@@ -135,7 +166,7 @@ const SignIn = () => {
         setAgreeTerms(false);
       }, 1000);
     } else {
-      showToast(result.message, 'error');
+      dispatch(showToast({ message: result.message, type: 'error' }));
     }
   };
 
@@ -258,14 +289,6 @@ const SignIn = () => {
           )}
         </div>
       </div>
-
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
     </div>
   );
 };

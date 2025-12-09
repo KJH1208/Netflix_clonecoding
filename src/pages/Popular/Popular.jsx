@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { getPopularMovies } from '../../api/tmdb';
+import { toggleWishlist } from '../../store/wishlistSlice';
+import { showToast } from '../../store/toastSlice';
 import MovieCard from '../../components/MovieCard/MovieCard';
 import Loading from '../../components/Loading/Loading';
-import Toast from '../../components/Toast/Toast';
-import useWishlist from '../../hooks/useWishlist';
 import './Popular.css';
 
 const Popular = () => {
@@ -12,13 +13,17 @@ const Popular = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [viewMode, setViewMode] = useState('infinite'); // 'table' or 'infinite'
-  const [toast, setToast] = useState(null);
+  const [viewMode, setViewMode] = useState('infinite');
   
   const observerRef = useRef();
   const loadMoreRef = useRef();
   
-  const { toggleWishlist, isInWishlist } = useWishlist();
+  const dispatch = useDispatch();
+  const wishlist = useSelector((state) => state.wishlist.items);
+
+  const isInWishlist = (movieId) => {
+    return wishlist.some(item => item.id === movieId);
+  };
 
   // 영화 데이터 불러오기
   const fetchMovies = useCallback(async (pageNum, append = false) => {
@@ -41,12 +46,12 @@ const Popular = () => {
       setTotalPages(response.data.total_pages);
     } catch (error) {
       console.error('영화 데이터를 불러오는데 실패했습니다:', error);
-      setToast({ message: '영화 데이터를 불러오는데 실패했습니다.', type: 'error' });
+      dispatch(showToast({ message: '영화 데이터를 불러오는데 실패했습니다.', type: 'error' }));
     } finally {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, []);
+  }, [dispatch]);
 
   // 초기 로드
   useEffect(() => {
@@ -109,11 +114,14 @@ const Popular = () => {
   };
 
   const handleToggleWishlist = (movie) => {
-    const added = toggleWishlist(movie);
-    setToast({
-      message: added ? `"${movie.title}"을(를) 찜 목록에 추가했습니다.` : `"${movie.title}"을(를) 찜 목록에서 제거했습니다.`,
-      type: added ? 'success' : 'info'
-    });
+    const isCurrentlyInWishlist = isInWishlist(movie.id);
+    dispatch(toggleWishlist(movie));
+    dispatch(showToast({
+      message: isCurrentlyInWishlist 
+        ? `"${movie.title}"을(를) 찜 목록에서 제거했습니다.`
+        : `"${movie.title}"을(를) 찜 목록에 추가했습니다.`,
+      type: isCurrentlyInWishlist ? 'info' : 'success'
+    }));
   };
 
   if (loading && movies.length === 0) {
@@ -146,9 +154,9 @@ const Popular = () => {
         </div>
 
         <div className={`movies-grid ${viewMode}`}>
-          {movies.map((movie) => (
+          {movies.map((movie, index) => (
             <MovieCard
-              key={`${movie.id}-${page}`}
+              key={`${movie.id}-${index}`}
               movie={movie}
               isWishlisted={isInWishlist(movie.id)}
               onToggleWishlist={handleToggleWishlist}
@@ -211,14 +219,6 @@ const Popular = () => {
           </>
         )}
       </div>
-
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
     </div>
   );
 };
