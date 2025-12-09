@@ -1,16 +1,19 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { isAuthenticated } from './utils/auth';
+import { useSelector } from 'react-redux';
 import Header from './components/Header/Header';
 import SignIn from './pages/SignIn/SignIn';
 import Home from './pages/Home/Home';
 import Popular from './pages/Popular/Popular';
 import Search from './pages/Search/Search';
 import Wishlist from './pages/Wishlist/Wishlist';
+import ToastContainer from './components/Toast/ToastContainer';
 import './styles/global.css';
 
 // 인증된 사용자만 접근 가능한 라우트
 const ProtectedRoute = ({ children }) => {
-  if (!isAuthenticated()) {
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  
+  if (!isLoggedIn) {
     return <Navigate to="/signin" replace />;
   }
   return (
@@ -23,7 +26,9 @@ const ProtectedRoute = ({ children }) => {
 
 // 이미 로그인된 사용자는 홈으로 리다이렉트
 const PublicRoute = ({ children }) => {
-  if (isAuthenticated()) {
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  
+  if (isLoggedIn) {
     return <Navigate to="/" replace />;
   }
   return children;
@@ -80,6 +85,9 @@ function App() {
         {/* 없는 경로는 홈으로 */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      
+      {/* 전역 토스트 */}
+      <ToastContainer />
     </Router>
   );
 }
