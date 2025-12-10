@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { onAuthChange } from './firebase';
-import { setUser, clearUser } from './store/authSlice';
+import { setUser, clearUser, setLoading } from './store/authSlice';
 import Header from './components/Header/Header';
 import SignIn from './pages/SignIn/SignIn';
 import Home from './pages/Home/Home';
@@ -139,7 +139,19 @@ function App() {
   }, [theme]);
 
   useEffect(() => {
-    // Firebase 인증 상태 감시
+    // 1. Local Storage에서 TMDB 로그인 확인
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const currentUser = localStorage.getItem('currentUser');
+    
+    if (isLoggedIn === 'true' && currentUser) {
+      dispatch(setUser({
+        email: currentUser,
+        uid: currentUser,
+        loginMethod: 'tmdb'
+      }));
+    }
+    
+    // 2. Firebase 인증 상태 감시 (구글 로그인)
     const unsubscribe = onAuthChange((user) => {
       if (user) {
         dispatch(setUser({
@@ -148,7 +160,13 @@ function App() {
           loginMethod: user.providerData[0]?.providerId === 'google.com' ? 'google' : 'email'
         }));
       } else {
-        dispatch(clearUser());
+        // Firebase에서 로그아웃되었지만 TMDB 로그인 상태 확인
+        const tmdbLoggedIn = localStorage.getItem('isLoggedIn');
+        const tmdbUser = localStorage.getItem('currentUser');
+        
+        if (tmdbLoggedIn !== 'true' || !tmdbUser) {
+          dispatch(clearUser());
+        }
       }
     });
 

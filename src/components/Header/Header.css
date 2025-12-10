@@ -226,7 +226,6 @@
 .login-badge {
   width: 1.5rem;
   height: 1.5rem;
-  background: linear-gradient(135deg, #4285F4, #34A853);
   border-radius: 0.25rem;
   display: flex;
   align-items: center;
@@ -234,6 +233,14 @@
   font-size: 0.75rem;
   color: white;
   flex-shrink: 0;
+}
+
+.login-badge.google {
+  background: linear-gradient(135deg, #4285F4, #34A853);
+}
+
+.login-badge.tmdb {
+  background: linear-gradient(135deg, #01d277, #01b4e4);
 }
 
 .user-email {

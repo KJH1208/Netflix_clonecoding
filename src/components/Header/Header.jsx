@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutFirebase } from '../../firebase';
+import { clearUser } from '../../store/authSlice';
 import { showToast } from '../../store/toastSlice';
 import { setTheme, setLanguage } from '../../store/settingsSlice';
 import './Header.css';
@@ -46,11 +47,19 @@ const Header = () => {
   }, []);
 
   const handleLogout = async () => {
-    const result = await logoutFirebase();
-    if (result.success) {
-      dispatch(showToast({ message: '로그아웃 되었습니다.', type: 'info' }));
-      navigate('/signin');
+    // TMDB 로그인인 경우 Local Storage 삭제
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('TMDb-Key');
+    
+    // Google 로그인인 경우 Firebase 로그아웃
+    if (loginMethod === 'google') {
+      await logoutFirebase();
     }
+    
+    dispatch(clearUser());
+    dispatch(showToast({ message: '로그아웃 되었습니다.', type: 'info' }));
+    navigate('/signin');
   };
 
   const handleThemeChange = (newTheme) => {
@@ -70,6 +79,24 @@ const Header = () => {
   };
 
   const isActive = (path) => location.pathname === path;
+
+  // 로그인 방식에 따른 뱃지
+  const getLoginBadge = () => {
+    if (loginMethod === 'google') {
+      return (
+        <span className="login-badge google">
+          <i className="fab fa-google"></i>
+        </span>
+      );
+    } else if (loginMethod === 'tmdb') {
+      return (
+        <span className="login-badge tmdb">
+          <i className="fas fa-key"></i>
+        </span>
+      );
+    }
+    return null;
+  };
 
   return (
     <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
@@ -159,11 +186,7 @@ const Header = () => {
           </div>
 
           <div className="user-info">
-            {loginMethod === 'google' && (
-              <span className="login-badge">
-                <i className="fab fa-google"></i>
-              </span>
-            )}
+            {getLoginBadge()}
             <span className="user-email">
               <i className="fas fa-user"></i> {userEmail}
             </span>
