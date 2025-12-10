@@ -20,6 +20,7 @@ const Popular = () => {
   
   const dispatch = useDispatch();
   const wishlist = useSelector((state) => state.wishlist.items);
+  const { language } = useSelector((state) => state.settings);
 
   const isInWishlist = (movieId) => {
     return wishlist.some(item => item.id === movieId);
@@ -46,12 +47,12 @@ const Popular = () => {
       setTotalPages(response.data.total_pages);
     } catch (error) {
       console.error('영화 데이터를 불러오는데 실패했습니다:', error);
-      dispatch(showToast({ message: '영화 데이터를 불러오는데 실패했습니다.', type: 'error' }));
+      dispatch(showToast({ message: language === 'ko' ? '영화 데이터를 불러오는데 실패했습니다.' : 'Failed to load movies.', type: 'error' }));
     } finally {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [dispatch]);
+  }, [dispatch, language]);
 
   // 초기 로드
   useEffect(() => {
@@ -118,8 +119,8 @@ const Popular = () => {
     dispatch(toggleWishlist(movie));
     dispatch(showToast({
       message: isCurrentlyInWishlist 
-        ? `"${movie.title}"을(를) 찜 목록에서 제거했습니다.`
-        : `"${movie.title}"을(를) 찜 목록에 추가했습니다.`,
+        ? `"${movie.title}"${language === 'ko' ? '을(를) 찜 목록에서 제거했습니다.' : ' removed from My List.'}`
+        : `"${movie.title}"${language === 'ko' ? '을(를) 찜 목록에 추가했습니다.' : ' added to My List.'}`,
       type: isCurrentlyInWishlist ? 'info' : 'success'
     }));
   };
@@ -133,22 +134,24 @@ const Popular = () => {
   }
 
   return (
-    <div className="popular-page page">
+    <div className={`popular-page page ${viewMode === 'table' ? 'table-view' : 'infinite-view'}`}>
       <div className="container">
         <div className="page-header">
-          <h1 className="page-title">🔥 대세 콘텐츠</h1>
+          <h1 className="page-title">
+            <i className="fas fa-fire"></i> {language === 'ko' ? '대세 콘텐츠' : 'Popular'}
+          </h1>
           <div className="view-toggle">
             <button
               className={`toggle-btn ${viewMode === 'table' ? 'active' : ''}`}
               onClick={() => handleViewModeChange('table')}
             >
-              테이블 뷰
+              <i className="fas fa-table"></i> {language === 'ko' ? '테이블 뷰' : 'Table View'}
             </button>
             <button
               className={`toggle-btn ${viewMode === 'infinite' ? 'active' : ''}`}
               onClick={() => handleViewModeChange('infinite')}
             >
-              무한 스크롤
+              <i className="fas fa-infinity"></i> {language === 'ko' ? '무한 스크롤' : 'Infinite Scroll'}
             </button>
           </div>
         </div>
@@ -172,7 +175,7 @@ const Popular = () => {
               onClick={() => handlePageChange(page - 1)}
               disabled={page === 1}
             >
-              ◀ 이전
+              <i className="fas fa-chevron-left"></i> {language === 'ko' ? '이전' : 'Prev'}
             </button>
             <div className="page-numbers">
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -202,7 +205,7 @@ const Popular = () => {
               onClick={() => handlePageChange(page + 1)}
               disabled={page === totalPages}
             >
-              다음 ▶
+              {language === 'ko' ? '다음' : 'Next'} <i className="fas fa-chevron-right"></i>
             </button>
           </div>
         )}
@@ -214,7 +217,7 @@ const Popular = () => {
               {loadingMore && <Loading />}
             </div>
             <button className="scroll-top-btn" onClick={scrollToTop}>
-              ▲ TOP
+              <i className="fas fa-arrow-up"></i>
             </button>
           </>
         )}
