@@ -20,7 +20,7 @@
 .search-form {
   display: flex;
   gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .search-input {
@@ -54,6 +54,81 @@
 
 .search-btn:hover {
   background-color: var(--primary-hover);
+}
+
+/* 최근 검색어 */
+.recent-searches {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.recent-searches-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.recent-searches-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.clear-searches-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.clear-searches-btn:hover {
+  color: var(--primary-color);
+}
+
+.recent-searches-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.recent-search-item {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.recent-search-btn {
+  padding: 0.4rem 0.75rem;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.recent-search-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.remove-search-btn {
+  padding: 0.4rem 0.5rem;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.remove-search-btn:hover {
+  color: var(--primary-color);
 }
 
 .filters {

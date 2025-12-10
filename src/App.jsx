@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { onAuthChange } from './firebase';
-import { setUser, clearUser, setLoading } from './store/authSlice';
+import { setUser, clearUser } from './store/authSlice';
 import Header from './components/Header/Header';
 import SignIn from './pages/SignIn/SignIn';
 import Home from './pages/Home/Home';
@@ -58,6 +58,12 @@ const PublicRoute = ({ children }) => {
 
 function App() {
   const dispatch = useDispatch();
+  const theme = useSelector((state) => state.settings.theme);
+
+  // 테마 초기화
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     // Firebase 인증 상태 감시
