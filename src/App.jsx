@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { onAuthChange } from './firebase';
 import { setUser, clearUser } from './store/authSlice';
@@ -83,7 +83,7 @@ function App() {
   }, [dispatch]);
 
   return (
-    <Router>
+    <>
       <Routes>
         {/* 로그인/회원가입 */}
         <Route 
@@ -135,7 +135,7 @@ function App() {
       
       {/* 전역 토스트 */}
       <ToastContainer />
-    </Router>
+    </>
   );
 }
 
