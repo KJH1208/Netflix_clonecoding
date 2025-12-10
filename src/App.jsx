@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { onAuthChange } from './firebase';
 import { setUser, clearUser } from './store/authSlice';
@@ -12,6 +12,7 @@ import Wishlist from './pages/Wishlist/Wishlist';
 import ToastContainer from './components/Toast/ToastContainer';
 import Loading from './components/Loading/Loading';
 import './styles/global.css';
+import './styles/transitions.css';
 
 // 인증된 사용자만 접근 가능한 라우트
 const ProtectedRoute = ({ children }) => {
@@ -56,34 +57,26 @@ const PublicRoute = ({ children }) => {
   return children;
 };
 
-function App() {
-  const dispatch = useDispatch();
-  const theme = useSelector((state) => state.settings.theme);
-
-  // 테마 초기화
+// 페이지 전환 애니메이션 래퍼
+const PageWrapper = ({ children }) => {
+  const location = useLocation();
+  
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
-
-  useEffect(() => {
-    // Firebase 인증 상태 감시
-    const unsubscribe = onAuthChange((user) => {
-      if (user) {
-        dispatch(setUser({
-          email: user.email,
-          uid: user.uid,
-          loginMethod: user.providerData[0]?.providerId === 'google.com' ? 'google' : 'email'
-        }));
-      } else {
-        dispatch(clearUser());
-      }
-    });
-
-    return () => unsubscribe();
-  }, [dispatch]);
-
+    // 페이지 전환 시 스크롤 맨 위로
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+  
   return (
-    <>
+    <div className="page-transition" key={location.pathname}>
+      {children}
+    </div>
+  );
+};
+
+// 라우트 컴포넌트
+const AppRoutes = () => {
+  return (
+    <PageWrapper>
       <Routes>
         {/* 로그인/회원가입 */}
         <Route 
@@ -132,10 +125,43 @@ function App() {
         {/* 없는 경로는 홈으로 */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+    </PageWrapper>
+  );
+};
+
+function App() {
+  const dispatch = useDispatch();
+  const theme = useSelector((state) => state.settings.theme);
+
+  // 테마 초기화
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  useEffect(() => {
+    // Firebase 인증 상태 감시
+    const unsubscribe = onAuthChange((user) => {
+      if (user) {
+        dispatch(setUser({
+          email: user.email,
+          uid: user.uid,
+          loginMethod: user.providerData[0]?.providerId === 'google.com' ? 'google' : 'email'
+        }));
+      } else {
+        dispatch(clearUser());
+      }
+    });
+
+    return () => unsubscribe();
+  }, [dispatch]);
+
+  return (
+    <Router>
+      <AppRoutes />
       
       {/* 전역 토스트 */}
       <ToastContainer />
-    </>
+    </Router>
   );
 }
 

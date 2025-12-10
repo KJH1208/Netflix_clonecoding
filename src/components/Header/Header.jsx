@@ -76,21 +76,25 @@ const Header = () => {
       <div className="header-container">
         <div className="header-left">
           <Link to="/" className="logo">
-            NEATFLIX
+            <i className="fas fa-film"></i> NEATFLIX
           </Link>
           
           <nav className={`nav-menu ${isMobileMenuOpen ? 'open' : ''}`}>
             <Link to="/" className={`nav-link ${isActive('/') ? 'active' : ''}`}>
-              {language === 'ko' ? '홈' : 'Home'}
+              <i className="fas fa-home"></i>
+              <span>{language === 'ko' ? '홈' : 'Home'}</span>
             </Link>
             <Link to="/popular" className={`nav-link ${isActive('/popular') ? 'active' : ''}`}>
-              {language === 'ko' ? '대세 콘텐츠' : 'Popular'}
+              <i className="fas fa-fire"></i>
+              <span>{language === 'ko' ? '대세 콘텐츠' : 'Popular'}</span>
             </Link>
             <Link to="/search" className={`nav-link ${isActive('/search') ? 'active' : ''}`}>
-              {language === 'ko' ? '찾아보기' : 'Search'}
+              <i className="fas fa-search"></i>
+              <span>{language === 'ko' ? '찾아보기' : 'Search'}</span>
             </Link>
             <Link to="/wishlist" className={`nav-link ${isActive('/wishlist') ? 'active' : ''}`}>
-              {language === 'ko' ? '내가 찜한 리스트' : 'My List'}
+              <i className="fas fa-heart"></i>
+              <span>{language === 'ko' ? '내가 찜한 리스트' : 'My List'}</span>
             </Link>
           </nav>
         </div>
@@ -104,44 +108,49 @@ const Header = () => {
                 e.stopPropagation();
                 setIsSettingsOpen(!isSettingsOpen);
               }}
+              aria-label="설정"
             >
-              ⚙️
+              <i className="fas fa-cog"></i>
             </button>
             
             {isSettingsOpen && (
               <div className="settings-dropdown">
                 <div className="settings-section">
-                  <span className="settings-label">{language === 'ko' ? '테마' : 'Theme'}</span>
+                  <span className="settings-label">
+                    <i className="fas fa-palette"></i> {language === 'ko' ? '테마' : 'Theme'}
+                  </span>
                   <div className="settings-options">
                     <button 
                       className={`settings-option ${theme === 'dark' ? 'active' : ''}`}
                       onClick={() => handleThemeChange('dark')}
                     >
-                      🌙 {language === 'ko' ? '다크' : 'Dark'}
+                      <i className="fas fa-moon"></i> {language === 'ko' ? '다크' : 'Dark'}
                     </button>
                     <button 
                       className={`settings-option ${theme === 'light' ? 'active' : ''}`}
                       onClick={() => handleThemeChange('light')}
                     >
-                      ☀️ {language === 'ko' ? '라이트' : 'Light'}
+                      <i className="fas fa-sun"></i> {language === 'ko' ? '라이트' : 'Light'}
                     </button>
                   </div>
                 </div>
                 
                 <div className="settings-section">
-                  <span className="settings-label">{language === 'ko' ? '언어' : 'Language'}</span>
+                  <span className="settings-label">
+                    <i className="fas fa-globe"></i> {language === 'ko' ? '언어' : 'Language'}
+                  </span>
                   <div className="settings-options">
                     <button 
                       className={`settings-option ${language === 'ko' ? 'active' : ''}`}
                       onClick={() => handleLanguageChange('ko')}
                     >
-                      🇰🇷 한국어
+                      한국어
                     </button>
                     <button 
                       className={`settings-option ${language === 'en' ? 'active' : ''}`}
                       onClick={() => handleLanguageChange('en')}
                     >
-                      🇺🇸 English
+                      English
                     </button>
                   </div>
                 </div>
@@ -150,17 +159,25 @@ const Header = () => {
           </div>
 
           <div className="user-info">
-            {loginMethod === 'google' && <span className="login-badge">G</span>}
-            <span className="user-email">{userEmail}</span>
+            {loginMethod === 'google' && (
+              <span className="login-badge">
+                <i className="fab fa-google"></i>
+              </span>
+            )}
+            <span className="user-email">
+              <i className="fas fa-user"></i> {userEmail}
+            </span>
           </div>
           <button className="logout-btn" onClick={handleLogout}>
-            {language === 'ko' ? '로그아웃' : 'Logout'}
+            <i className="fas fa-sign-out-alt"></i>
+            <span>{language === 'ko' ? '로그아웃' : 'Logout'}</span>
           </button>
         </div>
 
         <button 
           className={`mobile-menu-btn ${isMobileMenuOpen ? 'open' : ''}`}
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="메뉴"
         >
           <span></span>
           <span></span>
