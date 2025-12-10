@@ -1,6 +1,12 @@
 /* 전역 스타일 - Netflix 테마 */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 
+/* 기본 폰트 크기 설정 (rem 기준) */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -21,7 +27,8 @@
   --border-color: #333333;
   --success-color: #46d369;
   --warning-color: #f5c518;
-  --header-height: 68px;
+  --header-height: 4.25rem;
+  --touch-target: 2.75rem; /* 최소 44px 터치 영역 */
 }
 
 /* 라이트 테마 */
@@ -37,7 +44,8 @@
   --border-color: #e0e0e0;
   --success-color: #46d369;
   --warning-color: #f5c518;
-  --header-height: 68px;
+  --header-height: 4.25rem;
+  --touch-target: 2.75rem;
 }
 
 body {
@@ -48,11 +56,15 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 1rem;
+  -webkit-text-size-adjust: 100%; /* iOS 폰트 크기 자동 조절 방지 */
+  -webkit-tap-highlight-color: transparent; /* 터치 하이라이트 제거 */
 }
 
 a {
   text-decoration: none;
   color: inherit;
+  -webkit-touch-callout: none; /* iOS 롱프레스 메뉴 비활성화 */
 }
 
 button {
@@ -60,21 +72,45 @@ button {
   border: none;
   outline: none;
   font-family: inherit;
+  min-height: var(--touch-target); /* 터치 친화적 최소 높이 */
+  touch-action: manipulation; /* 더블탭 줌 방지 */
 }
 
 input {
   font-family: inherit;
   outline: none;
+  font-size: 1rem; /* iOS 줌 방지 (16px 이상) */
+  min-height: var(--touch-target);
+}
+
+select {
+  font-size: 1rem;
+  min-height: var(--touch-target);
 }
 
 ul {
   list-style: none;
 }
 
+/* 이미지 lazy loading 지원 */
+img {
+  content-visibility: auto;
+}
+
+img[loading="lazy"] {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+img[loading="lazy"].loaded,
+img[loading="lazy"]:not([src=""]) {
+  opacity: 1;
+}
+
 /* 스크롤바 스타일 */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 0.5rem;
+  height: 0.5rem;
 }
 
 ::-webkit-scrollbar-track {
@@ -83,7 +119,7 @@ ul {
 
 ::-webkit-scrollbar-thumb {
   background: var(--text-muted);
-  border-radius: 4px;
+  border-radius: 0.25rem;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -92,7 +128,7 @@ ul {
 
 /* 컨테이너 */
 .container {
-  max-width: 1400px;
+  max-width: 87.5rem; /* 1400px */
   margin: 0 auto;
   padding: 0 4%;
 }
@@ -114,11 +150,15 @@ ul {
 /* 버튼 공통 스타일 */
 .btn {
   padding: 0.75rem 1.5rem;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   font-size: 1rem;
   font-weight: 500;
   transition: all 0.2s ease;
   will-change: transform, background-color;
+  min-height: var(--touch-target);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-primary {
@@ -128,7 +168,7 @@ ul {
 
 .btn-primary:hover {
   background-color: var(--primary-hover);
-  transform: translateY(-2px);
+  transform: translateY(-0.125rem);
 }
 
 .btn-secondary {
@@ -138,7 +178,25 @@ ul {
 
 .btn-secondary:hover {
   background-color: rgba(109, 109, 110, 0.4);
-  transform: translateY(-2px);
+  transform: translateY(-0.125rem);
+}
+
+/* 터치 디바이스에서 hover 효과 제거 */
+@media (hover: none) and (pointer: coarse) {
+  .btn-primary:hover,
+  .btn-secondary:hover {
+    transform: none;
+  }
+  
+  .btn-primary:active {
+    background-color: var(--primary-hover);
+    transform: scale(0.98);
+  }
+  
+  .btn-secondary:active {
+    background-color: rgba(109, 109, 110, 0.4);
+    transform: scale(0.98);
+  }
 }
 
 /* ===== 애니메이션 최적화 ===== */
@@ -168,7 +226,7 @@ ul {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(1.25rem);
   }
   to {
     opacity: 1;
@@ -179,7 +237,7 @@ ul {
 @keyframes fadeInDown {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-1.25rem);
   }
   to {
     opacity: 1;
@@ -190,7 +248,7 @@ ul {
 @keyframes fadeInLeft {
   from {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateX(-1.25rem);
   }
   to {
     opacity: 1;
@@ -201,7 +259,7 @@ ul {
 @keyframes fadeInRight {
   from {
     opacity: 0;
-    transform: translateX(20px);
+    transform: translateX(1.25rem);
   }
   to {
     opacity: 1;
@@ -252,10 +310,10 @@ ul {
     transform: translateY(0);
   }
   40% {
-    transform: translateY(-10px);
+    transform: translateY(-0.625rem);
   }
   60% {
-    transform: translateY(-5px);
+    transform: translateY(-0.3125rem);
   }
 }
 
@@ -264,10 +322,10 @@ ul {
     transform: translateX(0);
   }
   10%, 30%, 50%, 70%, 90% {
-    transform: translateX(-5px);
+    transform: translateX(-0.3125rem);
   }
   20%, 40%, 60%, 80% {
-    transform: translateX(5px);
+    transform: translateX(0.3125rem);
   }
 }
 
@@ -339,15 +397,21 @@ ul {
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-  border-radius: 4px;
+  border-radius: 0.25rem;
 }
 
-/* 반응형 */
+/* ===== 반응형 ===== */
+
+/* 태블릿 */
 @media (max-width: 768px) {
+  html {
+    font-size: 15px;
+  }
+  
   :root,
   [data-theme="dark"],
   [data-theme="light"] {
-    --header-height: 56px;
+    --header-height: 3.5rem;
   }
 
   .section-title {
@@ -356,5 +420,47 @@ ul {
 
   .container {
     padding: 0 3%;
+  }
+}
+
+/* 모바일 */
+@media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+  
+  .container {
+    padding: 0 4%;
+  }
+}
+
+/* 화면 회전 대응 */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  :root,
+  [data-theme="dark"],
+  [data-theme="light"] {
+    --header-height: 3rem;
+  }
+  
+  .page {
+    padding-top: 3rem;
+  }
+}
+
+/* 큰 화면 (데스크탑) */
+@media (min-width: 1200px) {
+  html {
+    font-size: 17px;
+  }
+}
+
+/* 매우 큰 화면 */
+@media (min-width: 1600px) {
+  html {
+    font-size: 18px;
+  }
+  
+  .container {
+    max-width: 100rem;
   }
 }
