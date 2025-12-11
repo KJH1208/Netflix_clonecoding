@@ -14,9 +14,11 @@ const Popular = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [viewMode, setViewMode] = useState('infinite');
+  const [visibleCount, setVisibleCount] = useState(20);
   
   const observerRef = useRef();
   const loadMoreRef = useRef();
+  const gridRef = useRef();
   
   const dispatch = useDispatch();
   const wishlist = useSelector((state) => state.wishlist.items);
@@ -25,6 +27,56 @@ const Popular = () => {
   const isInWishlist = (movieId) => {
     return wishlist.some(item => item.id === movieId);
   };
+
+  // 화면 크기에 따라 보여줄 영화 개수 계산
+  // 화면 크기에 따라 보여줄 영화 개수 계산
+  const calculateVisibleCount = useCallback(() => {
+    if (viewMode !== 'table') return 20;
+    
+    // 실제 그리드 컨테이너 크기 기반 계산
+    const headerHeight = 70;
+    const pageHeaderHeight = 100;
+    const paginationHeight = 80;
+    const padding = 60;
+    
+    const availableHeight = window.innerHeight - headerHeight - pageHeaderHeight - paginationHeight - padding;
+    const availableWidth = window.innerWidth * 0.92 - 32; // container 너비 (92% - padding)
+    
+    const cardMinWidth = 150;
+    const cardHeight = 300; // 포스터(225) + 제목/메타(75)
+    const gap = 12;
+    
+    // 열 개수 계산
+    const columns = Math.max(Math.floor((availableWidth + gap) / (cardMinWidth + gap)), 2);
+    
+    // 행 개수 계산 (여유있게)
+    const rows = Math.max(Math.floor((availableHeight + gap) / (cardHeight + gap)), 1);
+    
+    const count = columns * rows;
+    return Math.min(Math.max(count, 4), 20);
+  }, [viewMode]);
+
+  // 화면 크기 변경 감지
+  // 화면 크기 변경 감지 (debounce 적용)
+  useEffect(() => {
+    let resizeTimer;
+    
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (viewMode === 'table') {
+          setVisibleCount(calculateVisibleCount());
+        }
+      }, 150); // 150ms 딜레이
+    };
+
+    handleResize(); // 초기 계산
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimer);
+    };
+  }, [viewMode, calculateVisibleCount]);
 
   // 영화 데이터 불러오기
   const fetchMovies = useCallback(async (pageNum, append = false) => {
@@ -98,6 +150,10 @@ const Popular = () => {
     setPage(1);
     setMovies([]);
     fetchMovies(1);
+    
+    if (mode === 'table') {
+      setVisibleCount(calculateVisibleCount());
+    }
   };
 
   // 테이블 뷰 페이지 변경
@@ -124,6 +180,11 @@ const Popular = () => {
       type: isCurrentlyInWishlist ? 'info' : 'success'
     }));
   };
+
+  // 테이블 뷰에서 보여줄 영화 목록
+  const displayedMovies = viewMode === 'table' 
+    ? movies.slice(0, visibleCount) 
+    : movies;
 
   if (loading && movies.length === 0) {
     return (
@@ -156,8 +217,8 @@ const Popular = () => {
           </div>
         </div>
 
-        <div className={`movies-grid ${viewMode}`}>
-          {movies.map((movie, index) => (
+        <div ref={gridRef} className={`movies-grid ${viewMode}`}>
+          {displayedMovies.map((movie, index) => (
             <MovieCard
               key={`${movie.id}-${index}`}
               movie={movie}
