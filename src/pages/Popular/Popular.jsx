@@ -18,7 +18,6 @@ const Popular = () => {
   
   const observerRef = useRef();
   const loadMoreRef = useRef();
-  const gridRef = useRef();
   
   const dispatch = useDispatch();
   const wishlist = useSelector((state) => state.wishlist.items);
