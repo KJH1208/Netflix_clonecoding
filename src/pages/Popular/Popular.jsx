@@ -29,34 +29,51 @@ const Popular = () => {
   };
 
   // 화면 크기에 따라 보여줄 영화 개수 계산
-  // 화면 크기에 따라 보여줄 영화 개수 계산
   const calculateVisibleCount = useCallback(() => {
     if (viewMode !== 'table') return 20;
     
-    // 실제 그리드 컨테이너 크기 기반 계산
+    const isMobile = window.innerWidth <= 768;
+    
+    // 모바일
+    if (isMobile) {
+      const headerHeight = 60;
+      const pageHeaderHeight = 120;
+      const paginationHeight = 70;
+      const padding = 40;
+      
+      const availableHeight = window.innerHeight - headerHeight - pageHeaderHeight - paginationHeight - padding;
+      const availableWidth = window.innerWidth - 32;
+      
+      const cardMinWidth = 100;
+      const cardHeight = 200;
+      const gap = 8;
+      
+      const columns = Math.max(Math.floor((availableWidth + gap) / (cardMinWidth + gap)), 2);
+      const rows = Math.max(Math.floor((availableHeight + gap) / (cardHeight + gap)), 2);
+      
+      return Math.min(columns * rows, 20);
+    }
+    
+    // 데스크탑
     const headerHeight = 70;
     const pageHeaderHeight = 100;
     const paginationHeight = 80;
     const padding = 60;
     
     const availableHeight = window.innerHeight - headerHeight - pageHeaderHeight - paginationHeight - padding;
-    const availableWidth = window.innerWidth * 0.92 - 32; // container 너비 (92% - padding)
+    const availableWidth = window.innerWidth * 0.92 - 32;
     
     const cardMinWidth = 150;
-    const cardHeight = 300; // 포스터(225) + 제목/메타(75)
+    const cardHeight = 300;
     const gap = 12;
     
-    // 열 개수 계산
     const columns = Math.max(Math.floor((availableWidth + gap) / (cardMinWidth + gap)), 2);
-    
-    // 행 개수 계산 (여유있게)
     const rows = Math.max(Math.floor((availableHeight + gap) / (cardHeight + gap)), 1);
     
     const count = columns * rows;
     return Math.min(Math.max(count, 4), 20);
   }, [viewMode]);
 
-  // 화면 크기 변경 감지
   // 화면 크기 변경 감지 (debounce 적용)
   useEffect(() => {
     let resizeTimer;
@@ -67,10 +84,10 @@ const Popular = () => {
         if (viewMode === 'table') {
           setVisibleCount(calculateVisibleCount());
         }
-      }, 150); // 150ms 딜레이
+      }, 150);
     };
 
-    handleResize(); // 초기 계산
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -152,7 +169,9 @@ const Popular = () => {
     fetchMovies(1);
     
     if (mode === 'table') {
-      setVisibleCount(calculateVisibleCount());
+      setTimeout(() => {
+        setVisibleCount(calculateVisibleCount());
+      }, 100);
     }
   };
 
@@ -217,7 +236,7 @@ const Popular = () => {
           </div>
         </div>
 
-        <div ref={gridRef} className={`movies-grid ${viewMode}`}>
+        <div className={`movies-grid ${viewMode}`}>
           {displayedMovies.map((movie, index) => (
             <MovieCard
               key={`${movie.id}-${index}`}
