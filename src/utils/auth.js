@@ -23,7 +23,7 @@ export const tryLogin = (email, password, rememberMe = false) => {
   const user = users.find(user => user.id === email && user.password === password);
   
   if (user) {
-    // API 키 저장 (비밀번호를 API 키로 사용 - 과제 요구사항)
+    // API 키 저장 (비밀번호를 API 키로 사용)
     localStorage.setItem('TMDb-Key', user.password);
     localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('currentUser', email);
