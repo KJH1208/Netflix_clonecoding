@@ -130,6 +130,78 @@ const Header = () => {
               <i className="fas fa-heart"></i>
               <span>{language === 'ko' ? '내가 찜한 리스트' : 'My List'}</span>
             </Link>
+            
+            {/* 모바일 전용 메뉴 */}
+            <div className="mobile-only-menu">
+              <div className="mobile-divider"></div>
+              
+              <div className="mobile-user-info">
+                {getLoginBadge()}
+                <span className="mobile-user-email">{userEmail}</span>
+              </div>
+              
+              <div className="mobile-settings">
+                <div className="mobile-settings-row">
+                  <span className="mobile-settings-label">
+                    <i className="fas fa-palette"></i> {language === 'ko' ? '테마' : 'Theme'}
+                  </span>
+                  <div className="mobile-settings-btns">
+                    <button 
+                      className={`mobile-setting-btn ${theme === 'dark' ? 'active' : ''}`}
+                      onClick={() => handleThemeChange('dark')}
+                    >
+                      <i className="fas fa-moon"></i>
+                    </button>
+                    <button 
+                      className={`mobile-setting-btn ${theme === 'light' ? 'active' : ''}`}
+                      onClick={() => handleThemeChange('light')}
+                    >
+                      <i className="fas fa-sun"></i>
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="mobile-settings-row">
+                  <span className="mobile-settings-label">
+                    <i className="fas fa-globe"></i> {language === 'ko' ? '언어' : 'Language'}
+                  </span>
+                  <div className="mobile-settings-btns">
+                    <button 
+                      className={`mobile-setting-btn ${language === 'ko' ? 'active' : ''}`}
+                      onClick={() => handleLanguageChange('ko')}
+                    >
+                      KO
+                    </button>
+                    <button 
+                      className={`mobile-setting-btn ${language === 'en' ? 'active' : ''}`}
+                      onClick={() => handleLanguageChange('en')}
+                    >
+                      EN
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="mobile-settings-row">
+                  <span className="mobile-settings-label">
+                    <i className="fas fa-magic"></i> {language === 'ko' ? '애니메이션' : 'Animation'}
+                  </span>
+                  <div className="mobile-settings-btns">
+                    <button 
+                      className={`mobile-setting-btn ${animationEnabled ? 'active' : ''}`}
+                      onClick={handleAnimationToggle}
+                    >
+                      <i className={`fas fa-${animationEnabled ? 'play' : 'pause'}`}></i>
+                      {animationEnabled ? 'ON' : 'OFF'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <button className="mobile-logout-btn" onClick={handleLogout}>
+                <i className="fas fa-sign-out-alt"></i>
+                <span>{language === 'ko' ? '로그아웃' : 'Logout'}</span>
+              </button>
+            </div>
           </nav>
         </div>
 
