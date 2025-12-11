@@ -14,6 +14,7 @@ const Popular = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [viewMode, setViewMode] = useState('infinite');
+  const [visibleCount, setVisibleCount] = useState(20);
   
   const observerRef = useRef();
   const loadMoreRef = useRef();
@@ -25,6 +26,73 @@ const Popular = () => {
   const isInWishlist = (movieId) => {
     return wishlist.some(item => item.id === movieId);
   };
+
+  // 화면 크기에 따라 보여줄 영화 개수 계산
+  const calculateVisibleCount = useCallback(() => {
+    if (viewMode !== 'table') return 20;
+    
+    const isMobile = window.innerWidth <= 768;
+    
+    // 모바일
+    if (isMobile) {
+      const headerHeight = 60;
+      const pageHeaderHeight = 120;
+      const paginationHeight = 70;
+      const padding = 40;
+      
+      const availableHeight = window.innerHeight - headerHeight - pageHeaderHeight - paginationHeight - padding;
+      const availableWidth = window.innerWidth - 32;
+      
+      const cardMinWidth = 100;
+      const cardHeight = 200;
+      const gap = 8;
+      
+      const columns = Math.max(Math.floor((availableWidth + gap) / (cardMinWidth + gap)), 2);
+      const rows = Math.max(Math.floor((availableHeight + gap) / (cardHeight + gap)), 2);
+      
+      return Math.min(columns * rows, 20);
+    }
+    
+    // 데스크탑
+    const headerHeight = 70;
+    const pageHeaderHeight = 100;
+    const paginationHeight = 80;
+    const padding = 60;
+    
+    const availableHeight = window.innerHeight - headerHeight - pageHeaderHeight - paginationHeight - padding;
+    const availableWidth = window.innerWidth * 0.92 - 32;
+    
+    const cardMinWidth = 150;
+    const cardHeight = 300;
+    const gap = 12;
+    
+    const columns = Math.max(Math.floor((availableWidth + gap) / (cardMinWidth + gap)), 2);
+    const rows = Math.max(Math.floor((availableHeight + gap) / (cardHeight + gap)), 1);
+    
+    const count = columns * rows;
+    return Math.min(Math.max(count, 4), 20);
+  }, [viewMode]);
+
+  // 화면 크기 변경 감지 (debounce 적용)
+  useEffect(() => {
+    let resizeTimer;
+    
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (viewMode === 'table') {
+          setVisibleCount(calculateVisibleCount());
+        }
+      }, 150);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimer);
+    };
+  }, [viewMode, calculateVisibleCount]);
 
   // 영화 데이터 불러오기
   const fetchMovies = useCallback(async (pageNum, append = false) => {
@@ -98,6 +166,12 @@ const Popular = () => {
     setPage(1);
     setMovies([]);
     fetchMovies(1);
+    
+    if (mode === 'table') {
+      setTimeout(() => {
+        setVisibleCount(calculateVisibleCount());
+      }, 100);
+    }
   };
 
   // 테이블 뷰 페이지 변경
@@ -124,6 +198,11 @@ const Popular = () => {
       type: isCurrentlyInWishlist ? 'info' : 'success'
     }));
   };
+
+  // 테이블 뷰에서 보여줄 영화 목록
+  const displayedMovies = viewMode === 'table' 
+    ? movies.slice(0, visibleCount) 
+    : movies;
 
   if (loading && movies.length === 0) {
     return (
@@ -157,7 +236,7 @@ const Popular = () => {
         </div>
 
         <div className={`movies-grid ${viewMode}`}>
-          {movies.map((movie, index) => (
+          {displayedMovies.map((movie, index) => (
             <MovieCard
               key={`${movie.id}-${index}`}
               movie={movie}
