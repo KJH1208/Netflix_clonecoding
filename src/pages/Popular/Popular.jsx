@@ -44,7 +44,7 @@ const Popular = () => {
       const availableWidth = window.innerWidth - 32;
       
       const cardMinWidth = 100;
-      const cardHeight = 180;
+      const cardHeight = 150;
       const gap = 8;
       
       const columns = Math.max(Math.floor((availableWidth + gap) / (cardMinWidth + gap)), 2);
