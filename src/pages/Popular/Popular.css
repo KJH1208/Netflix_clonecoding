@@ -86,6 +86,7 @@
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 0.75rem;
   align-content: start;
+  overflow: hidden;
 }
 
 .popular-page.table-view .movie-card {
@@ -114,8 +115,9 @@
 
 .popular-page.table-view .pagination {
   flex-shrink: 0;
-  margin-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  margin-top: auto;
+  padding: 0.75rem 0;
+  background-color: var(--bg-color);
 }
 
 /* 무한 스크롤 View - 스크롤 가능 */
@@ -236,26 +238,32 @@
   }
 
   .popular-page.table-view .movies-grid.table {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.5rem;
   }
 
   .popular-page.table-view .movie-title {
     font-size: 0.75rem;
   }
 
+  .popular-page.table-view .movie-meta {
+    font-size: 0.65rem;
+  }
+
   .pagination {
     gap: 0.5rem;
+    padding: 0.5rem 0;
   }
 
   .page-btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
   }
 
   .page-num {
-    width: 35px;
-    height: 35px;
-    font-size: 0.85rem;
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
   }
 
   .scroll-top-btn {
@@ -272,15 +280,15 @@
   }
 
   .popular-page.table-view .movies-grid.table {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
   }
 
-  .popular-page.table-view .movie-title {
-    font-size: 0.7rem;
+  .popular-page.table-view .movie-meta {
+    display: none;
   }
 
-  .popular-page.table-view .movie-meta {
-    font-size: 0.6rem;
+  .page-btn span {
+    display: none;
   }
 }
