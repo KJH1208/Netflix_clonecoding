@@ -62,50 +62,6 @@
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 }
 
-/* 영화 카드 로딩 애니메이션 (물결 효과) */
-@keyframes movieCardWaveIn {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.98);
-  }
-  60% {
-    opacity: 1;
-    transform: translateY(-4px) scale(1.01);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* 기본 카드 애니메이션 적용 */
-.movies-grid .movie-card {
-  opacity: 0;
-  animation: movieCardWaveIn 0.5s ease-out forwards;
-}
-
-/* 그리드 상에서 순서대로 살짝씩 딜레이를 주어 물결처럼 보이도록 */
-.movies-grid .movie-card:nth-child(1)  { animation-delay: 0.00s; }
-.movies-grid .movie-card:nth-child(2)  { animation-delay: 0.05s; }
-.movies-grid .movie-card:nth-child(3)  { animation-delay: 0.10s; }
-.movies-grid .movie-card:nth-child(4)  { animation-delay: 0.15s; }
-.movies-grid .movie-card:nth-child(5)  { animation-delay: 0.20s; }
-.movies-grid .movie-card:nth-child(6)  { animation-delay: 0.25s; }
-.movies-grid .movie-card:nth-child(7)  { animation-delay: 0.30s; }
-.movies-grid .movie-card:nth-child(8)  { animation-delay: 0.35s; }
-.movies-grid .movie-card:nth-child(9)  { animation-delay: 0.40s; }
-.movies-grid .movie-card:nth-child(10) { animation-delay: 0.45s; }
-.movies-grid .movie-card:nth-child(11) { animation-delay: 0.50s; }
-.movies-grid .movie-card:nth-child(12) { animation-delay: 0.55s; }
-.movies-grid .movie-card:nth-child(13) { animation-delay: 0.60s; }
-.movies-grid .movie-card:nth-child(14) { animation-delay: 0.65s; }
-.movies-grid .movie-card:nth-child(15) { animation-delay: 0.70s; }
-.movies-grid .movie-card:nth-child(16) { animation-delay: 0.75s; }
-.movies-grid .movie-card:nth-child(17) { animation-delay: 0.80s; }
-.movies-grid .movie-card:nth-child(18) { animation-delay: 0.85s; }
-.movies-grid .movie-card:nth-child(19) { animation-delay: 0.90s; }
-.movies-grid .movie-card:nth-child(20) { animation-delay: 0.95s; }
-
 /* Table View - 스크롤 불가, 화면에 맞게 자동 배치 */
 .popular-page.table-view {
   height: 100vh;

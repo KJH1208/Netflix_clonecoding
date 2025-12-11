@@ -1,88 +1,56 @@
 /* 페이지 전환 애니메이션 */
-.page-transition-enter {
-  opacity: 0;
-  transform: translateY(20px);
+.page-transition {
+  animation: pageEnter 0.4s ease forwards;
 }
 
-.page-transition-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.page-transition-exit {
-  opacity: 1;
-  transform: translateY(0);
+/* 페이드 인 효과 */
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-.page-transition-exit-active {
-  opacity: 0;
-  transform: translateY(-20px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+/* 슬라이드 업 효과 */
+@keyframes pageSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* 페이지 컨테이너 */
-.page-wrapper {
-  min-height: 100vh;
-}
-
-/* 슬라이드 효과 (대안) */
-.slide-enter {
-  opacity: 0;
-  transform: translateX(100%);
-}
-
-.slide-enter-active {
-  opacity: 1;
-  transform: translateX(0);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-.slide-exit {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.slide-exit-active {
-  opacity: 0;
-  transform: translateX(-100%);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-/* 페이드 효과 */
-.fade-enter {
-  opacity: 0;
-}
-
-.fade-enter-active {
-  opacity: 1;
-  transition: opacity 0.3s ease;
-}
-
-.fade-exit {
-  opacity: 1;
-}
-
-.fade-exit-active {
-  opacity: 0;
-  transition: opacity 0.3s ease;
+/* 스케일 인 효과 */
+@keyframes pageScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* prefers-reduced-motion 지원 */
 @media (prefers-reduced-motion: reduce) {
-  .page-transition-enter,
-  .page-transition-enter-active,
-  .page-transition-exit,
-  .page-transition-exit-active,
-  .slide-enter,
-  .slide-enter-active,
-  .slide-exit,
-  .slide-exit-active,
-  .fade-enter,
-  .fade-enter-active,
-  .fade-exit,
-  .fade-exit-active {
-    transition: none;
-    transform: none;
+  .page-transition {
+    animation: none;
   }
 }

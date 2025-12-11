@@ -464,3 +464,23 @@ img[loading="lazy"]:not([src=""]) {
     max-width: 100rem;
   }
 }
+/* 애니메이션 일시정지 */
+.animations-paused *,
+.animations-paused *::before,
+.animations-paused *::after {
+  animation-play-state: paused !important;
+  transition: none !important;
+}
+
+.animations-paused .movie-card {
+  animation: none !important;
+  opacity: 1 !important;
+}
+
+.animations-paused .movie-card:hover {
+  transform: none !important;
+}
+
+.animations-paused .movie-card-skeleton {
+  animation: none !important;
+}

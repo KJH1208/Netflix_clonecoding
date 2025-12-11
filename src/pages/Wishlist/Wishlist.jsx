@@ -7,6 +7,7 @@ import './Wishlist.css';
 const Wishlist = () => {
   const dispatch = useDispatch();
   const wishlist = useSelector((state) => state.wishlist.items);
+  const { language } = useSelector((state) => state.settings);
 
   const isInWishlist = (movieId) => {
     return wishlist.some(item => item.id === movieId);
@@ -15,7 +16,7 @@ const Wishlist = () => {
   const handleToggleWishlist = (movie) => {
     dispatch(toggleWishlist(movie));
     dispatch(showToast({
-      message: `"${movie.title}"을(를) 찜 목록에서 제거했습니다.`,
+      message: `"${movie.title}"${language === 'ko' ? '을(를) 찜 목록에서 제거했습니다.' : ' removed from My List.'}`,
       type: 'info'
     }));
   };
@@ -24,8 +25,12 @@ const Wishlist = () => {
     <div className="wishlist-page page">
       <div className="container">
         <div className="page-header">
-          <h1 className="page-title">❤️ 내가 찜한 리스트</h1>
-          <span className="wishlist-count">{wishlist.length}개의 영화</span>
+          <h1 className="page-title">
+            <i className="fas fa-heart"></i> {language === 'ko' ? '내가 찜한 리스트' : 'My List'}
+          </h1>
+          <span className="wishlist-count">
+            <i className="fas fa-film"></i> {wishlist.length}{language === 'ko' ? '개의 영화' : ' movies'}
+          </span>
         </div>
 
         {wishlist.length > 0 ? (
@@ -41,9 +46,11 @@ const Wishlist = () => {
           </div>
         ) : (
           <div className="empty-wishlist">
-            <div className="empty-icon">🎬</div>
-            <h2>찜한 영화가 없습니다</h2>
-            <p>마음에 드는 영화를 찾아 찜 목록에 추가해보세요!</p>
+            <div className="empty-icon">
+              <i className="fas fa-heart-broken"></i>
+            </div>
+            <h2>{language === 'ko' ? '찜한 영화가 없습니다' : 'Your list is empty'}</h2>
+            <p>{language === 'ko' ? '마음에 드는 영화를 찾아 찜 목록에 추가해보세요!' : 'Find movies you like and add them to your list!'}</p>
           </div>
         )}
       </div>
