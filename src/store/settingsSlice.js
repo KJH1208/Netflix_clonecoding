@@ -5,8 +5,10 @@ const loadSettingsFromStorage = () => {
   const theme = localStorage.getItem('theme') || 'dark';
   const language = localStorage.getItem('language') || 'ko';
   const recentSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+  const genres = JSON.parse(localStorage.getItem('genres') || '[]');
+  const animationEnabled = localStorage.getItem('animationEnabled') !== 'false';
   
-  return { theme, language, recentSearches };
+  return { theme, language, recentSearches, genres, animationEnabled };
 };
 
 const initialState = loadSettingsFromStorage();
@@ -18,8 +20,6 @@ const settingsSlice = createSlice({
     setTheme: (state, action) => {
       state.theme = action.payload;
       localStorage.setItem('theme', action.payload);
-      
-      // HTML에 테마 클래스 적용
       document.documentElement.setAttribute('data-theme', action.payload);
     },
     setLanguage: (state, action) => {
@@ -30,13 +30,9 @@ const settingsSlice = createSlice({
       const query = action.payload.trim();
       if (!query) return;
       
-      // 중복 제거
       state.recentSearches = state.recentSearches.filter(item => item !== query);
-      
-      // 맨 앞에 추가
       state.recentSearches.unshift(query);
       
-      // 최대 5개만 유지
       if (state.recentSearches.length > 5) {
         state.recentSearches = state.recentSearches.slice(0, 5);
       }
@@ -51,6 +47,20 @@ const settingsSlice = createSlice({
       state.recentSearches = [];
       localStorage.removeItem('recentSearches');
     },
+    setGenres: (state, action) => {
+      state.genres = action.payload;
+      localStorage.setItem('genres', JSON.stringify(action.payload));
+    },
+    setAnimationEnabled: (state, action) => {
+      state.animationEnabled = action.payload;
+      localStorage.setItem('animationEnabled', action.payload.toString());
+      
+      if (action.payload) {
+        document.documentElement.classList.remove('animations-paused');
+      } else {
+        document.documentElement.classList.add('animations-paused');
+      }
+    },
   },
 });
 
@@ -59,7 +69,9 @@ export const {
   setLanguage, 
   addRecentSearch, 
   removeRecentSearch, 
-  clearRecentSearches 
+  clearRecentSearches,
+  setGenres,
+  setAnimationEnabled
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

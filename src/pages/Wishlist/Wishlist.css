@@ -99,3 +99,18 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* 아이콘 스타일 */
+.wishlist-page .page-title i {
+  color: var(--primary-color);
+  margin-right: 0.5rem;
+}
+
+.wishlist-count i {
+  margin-right: 0.5rem;
+  color: var(--text-muted);
+}
+
+.empty-icon i {
+  color: var(--text-muted);
+}

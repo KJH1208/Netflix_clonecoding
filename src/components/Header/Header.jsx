@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { logoutFirebase } from '../../firebase';
 import { clearUser } from '../../store/authSlice';
 import { showToast } from '../../store/toastSlice';
-import { setTheme, setLanguage } from '../../store/settingsSlice';
+import { setTheme, setLanguage, setAnimationEnabled } from '../../store/settingsSlice';
 import './Header.css';
 
 const Header = () => {
@@ -15,9 +15,8 @@ const Header = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   
-  // Redux에서 상태 가져오기
   const { userEmail, loginMethod } = useSelector((state) => state.auth);
-  const { theme, language } = useSelector((state) => state.settings);
+  const { theme, language, animationEnabled } = useSelector((state) => state.settings);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,13 +27,11 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // 페이지 이동 시 메뉴 닫기
   useEffect(() => {
     setIsMobileMenuOpen(false);
     setIsSettingsOpen(false);
   }, [location]);
 
-  // 외부 클릭 시 설정 메뉴 닫기
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (!e.target.closest('.settings-container')) {
@@ -47,25 +44,25 @@ const Header = () => {
   }, []);
 
   const handleLogout = async () => {
-    // TMDB 로그인인 경우 Local Storage 삭제
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('currentUser');
     localStorage.removeItem('TMDb-Key');
     
-    // Google 로그인인 경우 Firebase 로그아웃
     if (loginMethod === 'google') {
       await logoutFirebase();
     }
     
     dispatch(clearUser());
-    dispatch(showToast({ message: '로그아웃 되었습니다.', type: 'info' }));
+    dispatch(showToast({ message: language === 'ko' ? '로그아웃 되었습니다.' : 'Logged out.', type: 'info' }));
     navigate('/signin');
   };
 
   const handleThemeChange = (newTheme) => {
     dispatch(setTheme(newTheme));
     dispatch(showToast({ 
-      message: newTheme === 'dark' ? '다크 모드로 변경되었습니다.' : '라이트 모드로 변경되었습니다.', 
+      message: newTheme === 'dark' 
+        ? (language === 'ko' ? '다크 모드로 변경되었습니다.' : 'Dark mode enabled.')
+        : (language === 'ko' ? '라이트 모드로 변경되었습니다.' : 'Light mode enabled.'), 
       type: 'success' 
     }));
   };
@@ -78,9 +75,19 @@ const Header = () => {
     }));
   };
 
+  const handleAnimationToggle = () => {
+    const newValue = !animationEnabled;
+    dispatch(setAnimationEnabled(newValue));
+    dispatch(showToast({ 
+      message: newValue 
+        ? (language === 'ko' ? '애니메이션이 활성화되었습니다.' : 'Animations enabled.')
+        : (language === 'ko' ? '애니메이션이 비활성화되었습니다.' : 'Animations disabled.'), 
+      type: 'success' 
+    }));
+  };
+
   const isActive = (path) => location.pathname === path;
 
-  // 로그인 방식에 따른 뱃지
   const getLoginBadge = () => {
     if (loginMethod === 'google') {
       return (
@@ -127,7 +134,6 @@ const Header = () => {
         </div>
 
         <div className="header-right">
-          {/* 설정 버튼 */}
           <div className="settings-container">
             <button 
               className="settings-btn"
@@ -178,6 +184,23 @@ const Header = () => {
                       onClick={() => handleLanguageChange('en')}
                     >
                       English
+                    </button>
+                  </div>
+                </div>
+
+                <div className="settings-section">
+                  <span className="settings-label">
+                    <i className="fas fa-magic"></i> {language === 'ko' ? '애니메이션' : 'Animation'}
+                  </span>
+                  <div className="settings-options">
+                    <button 
+                      className={`settings-option ${animationEnabled ? 'active' : ''}`}
+                      onClick={handleAnimationToggle}
+                    >
+                      <i className={`fas fa-${animationEnabled ? 'play' : 'pause'}`}></i> 
+                      {animationEnabled 
+                        ? (language === 'ko' ? '켜짐' : 'On') 
+                        : (language === 'ko' ? '꺼짐' : 'Off')}
                     </button>
                   </div>
                 </div>

@@ -341,3 +341,61 @@
     animation: none;
   }
 }
+/* 장르 태그 */
+.movie-genres {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.genre-tag {
+  font-size: 0.65rem;
+  padding: 0.15rem 0.4rem;
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-radius: 0.25rem;
+  white-space: nowrap;
+}
+
+.movie-card:hover .genre-tag {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* 반응형 */
+@media (max-width: 480px) {
+  .movie-genres {
+    display: none;
+  }
+}
+/* 장르 태그 */
+.movie-genres {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.genre-tag {
+  font-size: 0.6rem;
+  padding: 0.15rem 0.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  white-space: nowrap;
+}
+
+.movie-card:hover .genre-tag {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+/* 반응형 - 모바일에서 장르 숨기기 */
+@media (max-width: 480px) {
+  .movie-genres {
+    display: none;
+  }
+}

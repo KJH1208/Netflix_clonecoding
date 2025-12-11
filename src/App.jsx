@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { useSelector, useDispatch } from 'react-redux';
 import { onAuthChange } from './firebase';
 import { setUser, clearUser, setLoading } from './store/authSlice';
+import { setGenres, setAnimationEnabled } from './store/settingsSlice';
+import { getGenres } from './api/tmdb';
 import Header from './components/Header/Header';
 import SignIn from './pages/SignIn/SignIn';
 import Home from './pages/Home/Home';
@@ -62,7 +64,6 @@ const PageWrapper = ({ children }) => {
   const location = useLocation();
   
   useEffect(() => {
-    // 페이지 전환 시 스크롤 맨 위로
     window.scrollTo(0, 0);
   }, [location.pathname]);
   
@@ -78,7 +79,6 @@ const AppRoutes = () => {
   return (
     <PageWrapper>
       <Routes>
-        {/* 로그인/회원가입 */}
         <Route 
           path="/signin" 
           element={
@@ -87,8 +87,6 @@ const AppRoutes = () => {
             </PublicRoute>
           } 
         />
-
-        {/* 보호된 라우트들 */}
         <Route 
           path="/" 
           element={
@@ -121,8 +119,6 @@ const AppRoutes = () => {
             </ProtectedRoute>
           } 
         />
-
-        {/* 없는 경로는 홈으로 */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </PageWrapper>
@@ -131,15 +127,46 @@ const AppRoutes = () => {
 
 function App() {
   const dispatch = useDispatch();
-  const theme = useSelector((state) => state.settings.theme);
+  const { theme, animationEnabled } = useSelector((state) => state.settings);
 
   // 테마 초기화
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
+  // 애니메이션 설정 초기화
   useEffect(() => {
-    // 1. Local Storage에서 TMDB 로그인 확인
+    if (!animationEnabled) {
+      document.documentElement.classList.add('animations-paused');
+    } else {
+      document.documentElement.classList.remove('animations-paused');
+    }
+  }, [animationEnabled]);
+
+  // 장르 목록 로드 (API 캐싱)
+  useEffect(() => {
+    const loadGenres = async () => {
+      const cachedGenres = localStorage.getItem('genres');
+      
+      // 이미 캐시된 장르가 있으면 API 호출 안 함
+      if (cachedGenres && JSON.parse(cachedGenres).length > 0) {
+        dispatch(setGenres(JSON.parse(cachedGenres)));
+        return;
+      }
+      
+      try {
+        const response = await getGenres();
+        dispatch(setGenres(response.data.genres));
+      } catch (error) {
+        console.error('장르 목록 로드 실패:', error);
+      }
+    };
+    
+    loadGenres();
+  }, [dispatch]);
+
+  useEffect(() => {
+    // Local Storage에서 TMDB 로그인 확인
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const currentUser = localStorage.getItem('currentUser');
     
@@ -151,7 +178,7 @@ function App() {
       }));
     }
     
-    // 2. Firebase 인증 상태 감시 (구글 로그인)
+    // Firebase 인증 상태 감시 (구글 로그인)
     const unsubscribe = onAuthChange((user) => {
       if (user) {
         dispatch(setUser({
@@ -160,7 +187,6 @@ function App() {
           loginMethod: user.providerData[0]?.providerId === 'google.com' ? 'google' : 'email'
         }));
       } else {
-        // Firebase에서 로그아웃되었지만 TMDB 로그인 상태 확인
         const tmdbLoggedIn = localStorage.getItem('isLoggedIn');
         const tmdbUser = localStorage.getItem('currentUser');
         
@@ -176,8 +202,6 @@ function App() {
   return (
     <Router>
       <AppRoutes />
-      
-      {/* 전역 토스트 */}
       <ToastContainer />
     </Router>
   );
