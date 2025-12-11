@@ -520,9 +520,36 @@
 }
 
 /* API 정보 숨기기 */
+/* API 정보 표시 */
 .api-info {
-  display: none;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
 }
+
+.api-info p {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.api-info p:last-child {
+  margin-bottom: 0;
+}
+
+.api-info i {
+  color: var(--warning-color);
+}
+
+.api-info .fa-lightbulb {
+  color: #ffc107;
+}
+
 /* 약관 동의 체크박스 form-group 스타일 수정 */
 .form-group:has(.checkbox-label.terms) {
   background: none;
