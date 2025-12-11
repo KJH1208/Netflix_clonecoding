@@ -200,7 +200,7 @@ function App() {
   }, [dispatch]);
 
   return (
-    <Router>
+    <Router basename="/Netflix_clonecoding">
       <AppRoutes />
       <ToastContainer />
     </Router>
