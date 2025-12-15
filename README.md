@@ -232,15 +232,8 @@ git push origin main
 ## 🤖 AI 활용
 
 본 프로젝트는 **Claude AI**를 활용하여 개발되었습니다.
-- 코드 구현 및 디버깅
-- 반응형 디자인 최적화
-- GitHub Pages 배포 문제 해결
 
 ## 👨‍💻 개발자
 
 - **이름**: 강주현
 - **GitHub**: [@kjh1208](https://github.com/kjh1208)
-
-## 📄 라이선스
-
-This project is licensed under the MIT License.
